@@ -1,0 +1,175 @@
+<!doctype html><html lang="nl"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no"><title>Trostomaten</title><style>
+:root{font-family:system-ui,-apple-system,Segoe UI,sans-serif;color:#f4f5f2;background:#10251d}*{box-sizing:border-box}body{margin:0}.wrap{max-width:1050px;margin:auto;padding:16px}.head{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap}h1{margin:0;font-size:30px}h2{margin:8px 0 12px;font-size:18px}p{line-height:1.45}.muted{color:#c1d2c8;font-size:13px}.panel{background:#1b392b;border:1px solid #456450;border-radius:16px;padding:16px;margin:12px 0}.toolbar{display:flex;gap:9px;flex-wrap:wrap;align-items:center}button,select{border:1px solid #a8b8ab;border-radius:10px;background:#e9f1e9;color:#183024;padding:11px 13px;font:inherit;font-weight:650;cursor:pointer}button:disabled{opacity:.35;cursor:not-allowed}button.primary{background:#e4b64b;border-color:#e4b64b}button.danger{background:#b54b45;color:white;border-color:#b54b45}.board{background:radial-gradient(ellipse,#286344,#16442f);border:7px solid #294a32;border-radius:28px;padding:20px 10px;min-height:255px;display:flex;justify-content:center;align-items:center;gap:30px;flex-wrap:wrap}.stack{display:flex;flex-direction:column;align-items:center;gap:7px}.card{width:68px;height:98px;background:#fff;border:2px solid #eee;border-radius:9px;box-shadow:0 3px 6px #0004;display:flex;flex-direction:column;align-items:center;justify-content:center;color:#1d2430;font-size:25px;font-weight:800;user-select:none;position:relative}.card.red{color:#d33235}.card.joker{color:#6d45a5;font-size:19px}.card.back{background:repeating-linear-gradient(45deg,#3c6391 0 7px,#224369 7px 14px);border:5px solid #fff}.card.click{cursor:pointer}.card.selected{transform:translateY(-16px);border:3px solid #e4b64b;box-shadow:0 0 0 3px #ffdb76}.hand{display:flex;justify-content:center;flex-wrap:wrap;gap:7px;padding:25px 0 10px;min-height:150px}.scoregrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(145px,1fr));gap:8px}.score{background:#294836;border-radius:12px;padding:12px}.score.dead{opacity:.42}.score strong{display:block;font-size:21px}.tag{font-size:12px;color:#e4c976}.status{font-size:17px;font-weight:650}.log{max-height:175px;overflow:auto;font-size:13px;color:#d5e4d8}.log div{border-bottom:1px solid #456450;padding:5px 0}.cardsmall{font-size:14px}.modal{position:fixed;inset:0;background:#000b;display:flex;justify-content:center;align-items:center;padding:15px;z-index:5}.modal .panel{max-width:620px;width:100%;max-height:90vh;overflow:auto;background:#244332}.hidden{display:none!important}.row{display:flex;gap:8px;align-items:center;flex-wrap:wrap}.pill{background:#375b43;border-radius:99px;padding:5px 10px;font-size:13px}.sub{font-size:13px;color:#c7dbce}.notice{color:#ffe1a1}label{font-size:14px}@media(max-width:520px){.wrap{padding:10px}.card{width:49px;height:76px;font-size:19px}.card.joker{font-size:14px}.hand{gap:4px}.board{gap:18px;min-height:210px}.panel{padding:12px}button{padding:10px 11px}}
+
+html,body{width:100%;height:100%;height:100dvh;overflow:hidden;overscroll-behavior:none}
+.wrap{height:100vh;height:100dvh;max-width:1100px;padding:8px 12px;display:flex;flex-direction:column;gap:6px;overflow:hidden}
+.head{flex:0 0 auto;min-height:40px}.head h1{font-size:clamp(18px,3.2vh,28px)}.head .muted{font-size:11px}
+.panel{margin:0;padding:8px 12px}.scorepanel{flex:0 0 auto}.scoregrid{display:flex;gap:5px;overflow:hidden}.score{flex:1;min-width:0;padding:5px 7px}.score strong{font-size:clamp(12px,2vh,17px)}.score .sub,.score .tag{font-size:clamp(9px,1.4vh,12px);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.gamepanel{flex:1;min-height:0;display:flex;flex-direction:column;gap:5px;overflow:hidden}.status{font-size:clamp(12px,2vh,16px)}.gamepanel p{margin:0}.gamepanel .sub{font-size:11px}
+.opponents{flex:0 1 auto;min-height:0;display:flex;justify-content:space-around;align-items:flex-start;gap:5px;overflow:hidden}
+.opponent{flex:1;min-width:0;text-align:center;padding:3px;border-radius:9px;background:#153b2c}.opponent.active{outline:2px solid #e4b64b}.opponent.dead{opacity:.3}
+.opponent-name{font-size:clamp(10px,1.7vh,13px);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-bottom:4px}
+.opponent-cards{display:flex;justify-content:center;align-items:center;padding-left:8px;height:clamp(34px,7vh,60px)}
+.card.tiny{width:clamp(22px,4vh,38px);height:clamp(32px,6vh,53px);font-size:clamp(10px,1.6vh,14px);border-width:2px;border-radius:5px;flex-shrink:0}
+.opponent-cards .tiny{margin-left:-9px}.opponent-cards .tiny:first-child{margin-left:0}
+.board{flex:1;min-height:115px;max-height:34vh;padding:8px;gap:clamp(12px,4vw,40px);position:relative;border-width:4px;flex-wrap:nowrap}
+.board .card{width:clamp(44px,8vh,68px);height:clamp(63px,12vh,98px);font-size:clamp(15px,2.7vh,25px)}
+.board .stack{z-index:1}.board .stack .sub{font-size:10px}.board .available{cursor:pointer;box-shadow:0 0 0 3px #f4c956,0 0 18px #f4c95677;transform:translateY(-2px)}
+.lastplay{position:absolute;left:8px;top:7px;max-width:34%;font-size:10px;color:#e4f1df}.mini-cards{display:flex;gap:2px;margin-top:3px;flex-wrap:wrap}.mini-cards .tiny{width:clamp(20px,3.5vh,32px);height:clamp(28px,5vh,45px);font-size:11px}
+.hand{flex:0 0 auto;min-height:0;height:clamp(68px,15vh,130px);padding:14px 0 0;gap:clamp(2px,1vw,8px);flex-wrap:nowrap;align-items:flex-end}
+.hand .card{width:clamp(39px,9vw,68px);height:clamp(57px,12vh,98px);font-size:clamp(14px,2.5vh,24px);flex-shrink:1}.hand .card.selected{transform:translateY(-10px)}
+.gamepanel .toolbar{flex:0 0 auto;gap:5px}.gamepanel button{padding:7px 9px;font-size:clamp(11px,1.7vh,14px)}.gamepanel #warning{font-size:11px;min-height:12px}
+.logpanel{flex:0 0 auto;max-height:clamp(42px,9vh,85px);overflow:hidden}.logpanel h2{font-size:12px;margin:0}.log{max-height:50px;overflow:hidden;font-size:10px}.log div{padding:2px 0}
+.wrap>.muted{display:none}.modal .panel{max-height:85dvh;overflow:auto}.modal p{font-size:13px;margin:6px 0}
+@media(max-height:650px){.scorepanel .tag{display:none}.head .muted{display:none}.board{min-height:85px}.opponent-cards{height:32px}.opponent-cards .tiny{height:29px;width:22px}.logpanel{display:none}.hand{height:65px}.hand .card{height:55px}}
+
+.action-banner{align-self:center;background:#e4b64b;color:#183024;border-radius:99px;padding:5px 14px;font-size:12px;font-weight:800;text-align:center}
+.flight{position:fixed!important;z-index:40;pointer-events:none;width:48px!important;height:68px!important;font-size:15px!important;box-shadow:0 8px 18px #0008}
+.new-card{outline:3px solid #f8d652;box-shadow:0 0 16px #f8d652;animation:newpulse 1s ease-in-out 3}
+@keyframes newpulse{50%{filter:brightness(1.4);transform:translateY(-6px)}}
+#modal{z-index:60}#modal .panel{border:3px solid #e4b64b;box-shadow:0 15px 70px #000b}#modalTitle{font-size:25px}
+@media(max-height:650px){.action-banner{font-size:10px;padding:3px 9px}}
+
+.scoregrid{align-items:start}.score{padding:2px;min-width:0}.score-toggle{width:100%;background:transparent;border:0;color:#fff;padding:5px 3px;display:flex;flex-direction:column;gap:1px;align-items:center}.score-toggle span{font-size:11px;white-space:nowrap}.score-toggle strong{font-size:18px}.score-toggle small{color:#e4b64b}.score-history{max-height:min(24vh,180px);overflow-y:auto;padding:2px 5px 5px;border-top:1px solid #58715c;font-size:11px}.score-line{display:flex;justify-content:space-between;gap:5px;padding:3px 0;border-bottom:1px solid #ffffff18}.menu-section{display:flex;gap:10px;flex-wrap:wrap;align-items:end;margin:14px 0}.menu-section label{display:flex;flex-direction:column;gap:5px}.menu-section select{min-width:125px}.rules{max-height:46dvh;overflow:auto;padding:10px;background:#173426;border-radius:12px}.rules p{font-size:13px}.head .toolbar{margin-left:auto}#menuModal{z-index:80}
+
+.card.joker{font-size:clamp(10px,1.6vh,15px);line-height:1;letter-spacing:-.4px;text-align:center;white-space:nowrap;padding:2px}
+.hand .card.joker{font-size:clamp(9px,2vw,14px)}
+.card.tiny.joker{font-size:9px;letter-spacing:-.5px}
+.all-scores-btn{width:100%;padding:4px 8px;margin-bottom:5px;background:#345842;color:#f3f6ef;border:1px solid #62816b;font-size:12px}
+.scoregrid .score-toggle small{display:none}
+.board:has(.round-results:not(.hidden)){max-height:none;min-height:0;overflow:hidden;padding:5px}
+.board:has(.round-results:not(.hidden))>.stack,.board:has(.round-results:not(.hidden))>.lastplay{display:none}
+.round-results{width:100%;height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;overflow:hidden}
+.round-results h2{font-size:clamp(16px,2.6vh,23px);margin:0}
+.result-summary{font-size:clamp(11px,1.8vh,15px);font-weight:700}
+.revealed-hands{display:flex;width:100%;justify-content:space-evenly;gap:5px;overflow:hidden}
+.revealed-player{flex:1;min-width:0;text-align:center}
+.revealed-name{font-size:clamp(9px,1.5vh,12px);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.revealed-cards{display:flex;justify-content:center;align-items:center;min-height:40px;gap:1px}
+.revealed-cards .tiny{width:clamp(18px,3.5vw,34px);height:clamp(29px,5.3vh,49px);font-size:clamp(9px,1.5vh,13px);border-radius:4px}
+.result-changes{font-size:10px;text-align:center;max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.round-results button{padding:6px 12px}
+@media(max-width:500px){.revealed-cards .tiny{width:clamp(16px,4vw,23px);font-size:9px}.revealed-cards .tiny.joker{font-size:7px}}
+
+/* Show the actual cards in each player's normal seat after a Trostomaat. */
+.board:has(.round-results:not(.hidden))>.stack,.board:has(.round-results:not(.hidden))>.lastplay{display:flex}
+.board:has(.round-results:not(.hidden)){max-height:34vh;min-height:90px;overflow:visible;padding:8px}
+.round-results{position:absolute;inset:0;background:#155238f2;border-radius:20px;z-index:3;display:flex;flex-direction:column;justify-content:center;align-items:center;gap:5px;padding:8px;text-align:center}
+.result-title{font-size:clamp(13px,2.4vh,20px);font-weight:800}
+.result-score{font-size:clamp(10px,1.6vh,13px);max-width:100%;overflow-wrap:anywhere}
+.opponent-cards{height:auto;min-height:clamp(34px,7vh,60px);flex-wrap:nowrap;overflow:visible}
+.opponent-cards .card.revealed{width:clamp(27px,5vw,44px);height:clamp(39px,7vh,61px);font-size:clamp(10px,1.9vh,17px);border:2px solid #fff;flex-shrink:1;margin-left:-3px;line-height:1;white-space:nowrap}
+.opponent-cards .card.revealed.joker{font-size:clamp(7px,1.3vh,11px);letter-spacing:-.5px}
+.opponent:has(.revealed){background:#275c43;outline:2px solid #e4b64b}
+@media(max-width:500px){.opponent-cards .card.revealed{width:clamp(23px,6vw,32px);height:clamp(35px,7vh,48px);font-size:clamp(9px,1.5vh,13px)}.opponent-cards .card.revealed.joker{font-size:7px}}
+
+.score-row{display:flex;align-items:stretch;gap:6px}
+.score-row .scoregrid{flex:1;min-width:0}
+.score-arrow{flex:0 0 30px;align-self:stretch;min-height:50px;padding:0 5px;border-radius:9px;background:#345842;border:1px solid #62816b;color:#f5f4e9;font-size:20px;font-weight:700;cursor:pointer}
+.score-arrow:active{background:#456c52}
+</style></head><body><div class="wrap"><div class="head"><div><h1>🍅 Trostomaten</h1><div class="muted">Speel tegen de computer</div></div><div class="toolbar"><button id="menuBtn" class="primary">☰ Menu</button></div></div><div class="panel scorepanel"><div class="score-row"><div id="scores" class="scoregrid"></div><button id="allScoresBtn" class="score-arrow" aria-label="Open alle scorelijsten" title="Open alle scorelijsten">▾</button></div></div><div class="panel gamepanel"><div id="status" class="status"></div><div id="actionBanner" class="action-banner">Kies je kaarten</div><p id="hint" class="sub"></p><div id="bots" class="opponents"></div><div class="board"><div id="roundResults" class="round-results hidden"></div><div class="lastplay"><span>Laatst opgelegd</span><div id="lastPlay" class="mini-cards"></div></div><div class="stack"><div id="draw" class="card back click" title="Pak van de gesloten stapel"></div><div class="sub">Gesloten <span id="deckCount"></span></div></div><div class="stack"><div id="discard" class="card"></div><div class="sub">Open aflegstapel</div></div></div><div id="hand" class="hand"></div><div class="toolbar"><button id="discardBtn" class="primary">Leg selectie af</button><button id="returnBtn" class="primary hidden">Gooi gelijke kaart terug</button><button id="callBtn" class="danger">🍅 Trostomaat!</button></div><p id="warning" class="notice"></p></div><div class="panel logpanel"><h2>Spelverloop</h2><div id="log" class="log"></div></div><div class="muted">Prototype v0.10 · Alle spelgegevens blijven in deze browserpagina. Je kunt deze HTML ook offline openen.</div></div><div id="menuModal" class="modal hidden"><div class="panel"><div class="toolbar" style="justify-content:space-between"><h2>🍅 Trostomaten · Menu</h2><button id="closeMenu">✕</button></div><div class="menu-section"><label>Aantal spelers (inclusief jezelf)<select id="botCount"><option value="1">2 spelers</option><option value="2" selected>3 spelers</option><option value="3">4 spelers</option></select></label><label>Moeilijkheid<select id="difficulty"><option value="easy">Makkelijk</option><option value="normal" selected>Normaal</option><option value="hard">Moeilijk</option></select></label><button id="newGame" class="primary">Start nieuw spel</button><button id="rulesBtn">📖 Spelregels</button></div><div id="rules" class="hidden rules"><h2>Spelregels</h2><p>Iedere speler krijgt 5 kaarten. De speelrichting is met de klok mee en de startspeler schuift iedere ronde door.</p><p>Leg één kaart, minimaal twee gelijke kaarten of een straat van minimaal drie opeenvolgende kaarten van dezelfde soort af, in oplopende of aflopende volgorde. Jokers zijn vrij inzetbaar, ook meerdere tegelijk.</p><p>Pak vervolgens één kaart van de gesloten stapel of de bovenste beschikbare open kaart van de vorige speler. Trek je gesloten een kaart met dezelfde waarde als de bovenste open kaart, dan mag je die direct teruggooien voordat de volgende speler aflegt.</p><p>Kaartwaarden: joker 0, aas 1, 2–10 eigen waarde, boer/vrouw/koning 10.</p><p>Bij maximaal 5 handpunten mag je Trostomaat roepen. Heb je na direct teruggooien geen kaarten meer, dan roep je bij je volgende beurt automatisch Trostomaat (dit kan vals zijn). Heeft niemand evenveel of minder, dan win je en krijg je 0 punten; anderen krijgen hun handwaarde. Bij een valse Trostomaat krijgt de roeper precies 25 punten. De andere speler(s) met de laagste handwaarde winnen en krijgen 0, overige spelers krijgen hun handwaarde.</p><p>Bij een tweede opeenvolgende rondewinst krijg je −5 punten, en bij elke volgende rondewinst opnieuw −5. Gedeelde winnaars tellen allemaal mee.</p><p>Precies 50 punten wordt 0; precies 100 wordt 50; boven 100 ben je uitgeschakeld. De laatste overgebleven speler wint. Bij een lege gesloten stapel wordt de aflegstapel opnieuw geschud, behalve de bovenste kaart.</p></div></div></div><div id="modal" class="modal hidden"><div class="panel"><h2 id="modalTitle"></h2><div id="modalText"></div><div class="toolbar"><button id="modalBtn" class="primary">Volgende ronde</button></div></div></div><script>
+'use strict';
+const suits=['♥','♦','♣','♠'], values=['A','2','3','4','5','6','7','8','9','10','B','V','H'];
+const $=id=>document.getElementById(id);let game=null,token=0,autoTimer=null,botRunning=false;
+const point=c=>c.joker?0:Math.min(c.rank,10);
+const sum=cards=>cards.reduce((n,c)=>n+point(c),0);
+const name=c=>c.joker?'Joker':values[c.rank-1]+c.suit;
+const sleep=ms=>new Promise(r=>setTimeout(r,ms));
+const shuffle=a=>{for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a};
+function pack(){let id=0;return [...suits.flatMap(s=>Array.from({length:13},(_,i)=>({id:id++,suit:s,rank:i+1}))),{id:id++,joker:true},{id:id++,joker:true}]}
+function validInPlayedOrder(a){
+ if(a.length<=2)return valid(a);
+ const regular=a.filter(c=>!c.joker);
+ if(!regular.length)return true;
+ if(regular.every(c=>c.rank===regular[0].rank))return true;
+ if(!valid(a))return false;
+ // Jokers fill gaps, but the cards must be placed in ascending or descending order.
+ const candidates=[1,-1];
+ return candidates.some(dir=>{
+   for(let start=1;start<=14-a.length;start++){
+     if(a.every((c,i)=>c.joker||c.rank===(dir===1?start+i:start+a.length-1-i)))return true;
+   }
+   return false;
+ });
+}
+function combos(hand){const out=[];for(let mask=1;mask<(1<<hand.length);mask++){let a=hand.filter((_,i)=>mask&(1<<i));if(valid(a))out.push(a)}return out}
+function valid(a){if(a.length===1)return true;const jok=a.filter(c=>c.joker).length,regular=a.filter(c=>!c.joker);if(regular.every(c=>c.rank===regular[0]?.rank)&&a.length>=2)return true;if(!regular.length)return true;if(a.length<3)return false;if(!regular.every(c=>c.suit===regular[0].suit))return false;let ranks=regular.map(c=>c.rank).sort((a,b)=>a-b);if(new Set(ranks).size!==ranks.length)return false;return ranks[ranks.length-1]-ranks[0]+1<=a.length&&a.length<=13}
+function log(s){game.logs.unshift(s);game.logs=game.logs.slice(0,35)}
+function current(){return game.players[game.turn]}
+function active(){return game.players.filter(p=>!p.dead)}
+function nextActive(from){let i=from;do{i=(i+1)%game.players.length}while(game.players[i].dead);return i}
+function deal(){clearTimeout(autoTimer);game.roundResult=null;game.deck=shuffle(pack());game.discards=[];game.lastPlay=[];game.pickableId=null;game.players.forEach(p=>p.hand=p.dead?[]:game.deck.splice(0,5));game.discards.push(game.deck.pop());game.pickableId=game.discards.at(-1).id;game.selected=[];game.phase='discard';game.returnCard=null;game.turn=game.start;game.round++;log(`Ronde ${game.round} gestart. ${current().name} begint.`);render();if(game.turn!==0)botTurn();else if(sum(current().hand)===0){setTimeout(()=>{if(game&&game.phase==='discard'&&game.turn===0)callTrostomaten()},650)}}
+function newGame(){clearTimeout(autoTimer);token++;botRunning=false;game={players:Array.from({length:Number($('botCount').value)+1},(_,i)=>({name:i?'Computer '+i:'Jij',hand:[],score:0,streak:0,dead:false,history:[]})),start:0,round:0,logs:[],turn:0,phase:'discard',selected:[],deck:[],discards:[],lastPlay:[],pickableId:null,returnCard:null};deal()}
+function replenish(){if(game.deck.length)return;if(game.discards.length<=1)return;const keep=game.discards.filter(c=>c.id===game.pickableId||c.id===game.discards.at(-1)?.id);game.deck=shuffle(game.discards.filter(c=>!keep.includes(c)));game.discards=keep;log('Trekstapel opnieuw geschud; bovenste open kaart blijft liggen.')}
+function take(from){replenish();if(from==='closed'){if(!game.deck.length)return null;return game.deck.pop()}const i=game.discards.findIndex(c=>c.id===game.pickableId);if(i<0)return null;return game.discards.splice(i,1)[0]}
+function applyDiscard(p,a){game.pickableId=game.discards.at(-1)?.id??null;p.hand=p.hand.filter(c=>!a.some(x=>x.id===c.id));game.discards.push(...a);game.lastPlay=a.slice();log(`${p.name} legt ${a.map(name).join(', ')} af.`)}
+function selected(){return game.selected.map(id=>current().hand.find(c=>c.id===id)).filter(Boolean)}
+function humanDiscard(){if(game.turn!==0||game.phase!=='discard')return;let a=selected();if(!validInPlayedOrder(a)||!a.length){$('warning').textContent='Selecteer kaarten in aflegvolgorde: een straat moet oplopend of aflopend zijn. Klik opnieuw om de volgorde te wijzigen.';return}animateMove('hand','discard',a,false);applyDiscard(current(),a);game.selected=[];game.phase='draw';render()}
+function humanDraw(from){if(game.turn!==0||game.phase!=='draw')return;let top=game.discards.at(-1),c=take(from);if(!c){$('warning').textContent='Deze stapel heeft geen kaart beschikbaar.';return}current().hand.push(c);game.newCardId=c.id;animateMove(from==='closed'?'draw':'discard','hand',[c],from==='closed');log(`Je pakt ${from==='closed'?'een gesloten kaart':'de open kaart '+name(c)}.`);game.phase='afterdraw';game.returnCard=from==='closed'&&top&&!c.joker&&!top.joker&&c.rank===top.rank?c.id:null;render();scheduleEndTurn()}
+function scheduleEndTurn(){clearTimeout(autoTimer);const t=token;autoTimer=setTimeout(()=>{if(t===token&&game?.turn===0&&game.phase==='afterdraw')endTurn()},game.returnCard!==null?2200:1250)}
+function returnCard(){if(game.phase!=='afterdraw'||game.returnCard==null)return;clearTimeout(autoTimer);const p=current(),c=p.hand.find(x=>x.id===game.returnCard);animateMove('hand','discard',[c],false);p.hand=p.hand.filter(x=>x.id!==c.id);game.discards.push(c);game.lastPlay=[c];log(`Je gooit ${name(c)} direct terug.`);game.returnCard=null;endTurn()}
+function endTurn(){if(game.phase!=='afterdraw')return;game.returnCard=null;game.newCardId=null;game.turn=nextActive(game.turn);game.pickableId=null;game.phase='discard';render();if(game.turn!==0)botTurn();else if(sum(current().hand)===0){setTimeout(()=>{if(game&&game.phase==='discard'&&game.turn===0)callTrostomaten()},650)}}
+function addScore(p,n){let before=p.score;p.score+=n;if(p.score===50)p.score=0;else if(p.score===100)p.score=50;if(p.score>100)p.dead=true;p.history.push({round:game.round,delta:n,before,after:p.score,won:game.roundWinners?.includes(p.name)||false});return `${p.name}: ${before} ${n>=0?'+':''}${n} → ${p.score}${p.dead?' (dood)':''}`}
+function callTrostomaten(){clearTimeout(autoTimer);const caller=current();if(game.phase!=='discard'||sum(caller.hand)>5)return;let min=Math.min(...active().map(p=>sum(p.hand)));let falseCall=active().some(p=>p!==caller&&sum(p.hand)<=sum(caller.hand));let winners=falseCall?active().filter(p=>p!==caller&&sum(p.hand)===min):[caller];let lines=[`${caller.name} roept TROSTOMAAT! ${falseCall?'🍅 VALSE TROSTOMAAT!':'🍅 Geldig!'}`];lines.push(...active().map(p=>`${p.name}: ${p.hand.map(name).join(' · ')} (${sum(p.hand)} punten)`));game.roundWinners=winners.map(p=>p.name);const changes=[];for(const p of active()){let won=winners.includes(p);p.streak=won?p.streak+1:0;let delta=falseCall&&p===caller?25:won?0:sum(p.hand);if(won&&p.streak>=2)delta-=5;changes.push(addScore(p,delta))}lines.push('Winnaar(s) ronde: '+winners.map(p=>p.name).join(', '));lines.push(...changes);log(lines[0]);game.phase='roundover';game.roundResult={falseCall,caller:caller.name,winners:winners.map(p=>p.name),hands:game.players.filter(p=>p.hand.length||p===caller).map(p=>({name:p.name,cards:p.hand.slice(),points:sum(p.hand),won:winners.includes(p)})),changes};token++;botRunning=false;render();return;/* old popup disabled */$('modalTitle').textContent=falseCall?'Valse Trostomaat!':'Trostomaat!';$('modalText').replaceChildren(...lines.map((s,i)=>{let p=document.createElement('p');p.textContent=s;p.className=i===0?'status':i===1?'sub':'';return p}));const survivors=active();$('modalBtn').textContent=survivors.length<=1?'Nieuw spel':'Volgende ronde';if(survivors.length<=1){let p=document.createElement('h2');p.textContent=survivors.length?'🏆 '+survivors[0].name+' wint het spel!':'Alle spelers uitgeschakeld.';$('modalText').append(p)}$('modal').classList.remove('hidden')}
+function afterRound(){if(active().length<=1){newGame();return}game.start=nextActive(game.start);game.roundResult=null;deal()}
+function bestDiscard(hand){let opts=combos(hand);let scored=opts.map(a=>{let rest=hand.filter(c=>!a.includes(c));let score=sum(a)*1.3+a.length*1.5-(a.filter(c=>c.joker).length*15)-sum(rest)*.05;return {a,score}});scored.sort((a,b)=>b.score-a.score);return scored[0]?.a||[hand[0]]}
+function botShouldCall(p){let v=sum(p.hand);if($('difficulty').value==='easy')return v<=3&&Math.random()<.55;if(v>5)return false;let others=active().filter(x=>x!==p);let risk=others.some(x=>x.hand.length<=2);return $('difficulty').value==='hard'?(v===0||(!risk&&Math.random()<.97)||Math.random()<.20):(v===0||(!risk&&Math.random()<.88)||Math.random()<.40)}
+async function botTurn(){if(botRunning)return;botRunning=true;const t=token;while(game&&game.turn!==0&&game.phase==='discard'&&t===token){await sleep(1050);if(t!==token||game.phase!=='discard')return;let p=current();if(p.hand.length===0||botShouldCall(p)){callTrostomaten();return}let a=$('difficulty').value==='easy'?combos(p.hand).sort((x,y)=>sum(y)-sum(x))[Math.floor(Math.random()*Math.min(3,combos(p.hand).length))]||[p.hand[0]]:bestDiscard(p.hand);if(!validInPlayedOrder(a)){
+  const straights=[...a].sort((x,y)=>(x.joker?99:x.rank)-(y.joker?99:y.rank));
+  // Find a playable ascending or descending sequence, including joker positions.
+  let ordered=null;
+  function permute(prefix,remaining){
+    if(ordered)return;
+    if(!remaining.length){if(validInPlayedOrder(prefix))ordered=prefix;return}
+    for(let j=0;j<remaining.length;j++)permute([...prefix,remaining[j]],[...remaining.slice(0,j),...remaining.slice(j+1)]);
+  }
+  permute([],straights);
+  if(ordered)a=ordered;
+}animateMove('bots','discard',a,true);applyDiscard(p,a);game.phase='draw';render();await sleep(950);if(t!==token||game.phase!=='draw')return;let open=game.discards.find(c=>c.id===game.pickableId),useOpen=open&&!open.joker&&(point(open)<=3||p.hand.some(c=>c.rank===open.rank&&!c.joker))&&Math.random()<($('difficulty').value==='hard'?.95:$('difficulty').value==='easy'?.35:.72);let top=game.discards.at(-1),c=take(useOpen?'open':'closed');if(!c){c=take('closed')||take('open')}if(!c){log('Geen kaart beschikbaar.');game.phase='roundover';token++;botRunning=false;render();return}p.hand.push(c);animateMove(useOpen?'discard':'draw','bots',[c],true);log(`${p.name} pakt ${useOpen?'de open kaart':'een gesloten kaart'}.`);if(!useOpen&&top&&!c.joker&&!top.joker&&c.rank===top.rank){p.hand.pop();game.discards.push(c);game.lastPlay=[c];log(`${p.name} gooit een gelijke kaart direct terug.`)}game.turn=nextActive(game.turn);game.pickableId=null;game.phase='discard';render();await sleep(650)}botRunning=false}
+
+function animateMove(from,to,cards,hidden){
+ const source=document.getElementById(from),target=document.getElementById(to);
+ if(!source||!target)return;
+ const a=source.getBoundingClientRect(),b=target.getBoundingClientRect();
+ const x=a.left+a.width/2,y=a.top+a.height/2;
+ let tx=b.left+b.width/2,ty=b.top+b.height/2;
+ if(to==='hand' && cards.length===1 && game){
+   // Richt de vliegende kaart op haar eigen gesorteerde positie in de hand,
+   // niet op het midden van de speeltafel of de hele hand-container.
+   const ordered=game.players[0].hand.slice().sort((u,v)=>point(u)-point(v)||((u.suit||'').localeCompare(v.suit||'')));
+   const slot=ordered.findIndex(c=>c.id===cards[0].id);
+   const oldCards=[...target.querySelectorAll('.card')];
+   const cardWidth=oldCards[0]?.getBoundingClientRect().width||Math.min(68,window.innerWidth*.09);
+   const gap=parseFloat(getComputedStyle(target).columnGap)||4;
+   const total=ordered.length*cardWidth+Math.max(0,ordered.length-1)*gap;
+   tx=b.left+b.width/2-total/2+slot*(cardWidth+gap)+cardWidth/2;
+   ty=b.bottom-Math.min(98,window.innerHeight*.12)/2;
+ }
+ if(to==='bots' && game){
+   const opponent=document.querySelectorAll('.opponent')[Math.max(0,game.turn-1)]?.querySelector('.opponent-cards');
+   if(opponent){const r=opponent.getBoundingClientRect();tx=r.left+r.width/2;ty=r.top+r.height/2;}
+ }
+ cards.slice(0,5).forEach((c,i)=>{
+  const el=document.createElement('div');el.className='card flight '+(hidden?'back':c.joker?'joker':['♥','♦'].includes(c.suit)?'red':'');
+  if(!hidden)el.textContent=name(c);
+  el.style.left=(x-24+i*4)+'px';el.style.top=(y-34)+'px';
+  document.body.append(el);
+  el.animate([{transform:'translate(0,0) rotate(-7deg)',opacity:1},{transform:`translate(${tx-x}px,${ty-y}px) rotate(6deg)`,opacity:1}],{duration:650+i*80,easing:'cubic-bezier(.2,.75,.2,1)'}).onfinish=()=>el.remove();
+  setTimeout(()=>el.remove(),1100);
+ });
+}
+
+function renderRoundResults(){
+ const box=$('roundResults');box.replaceChildren();
+ const r=game.roundResult;
+ box.classList.toggle('hidden',game.phase!=='roundover'||!r);
+ if(!r)return;
+ const title=document.createElement('div');title.className='result-title';
+ title.textContent=(r.falseCall?'🍅 Valse Trostomaat!':'🍅 Trostomaat!')+'  ·  '+r.winners.join(' & ')+' 😊';box.append(title);
+ const change=document.createElement('div');change.className='result-score';change.textContent=r.changes.join('  |  ');box.append(change);
+ const btn=document.createElement('button');btn.className='primary';btn.textContent=active().length<=1?'🏆 Nieuw spel':'Volgende ronde';btn.onclick=afterRound;box.append(btn);
+}
+function cardHTML(c,interactive=false,selected=false){let e=document.createElement('div');e.className='card '+(c.joker?'joker':(['♥','♦'].includes(c.suit)?'red':''))+(interactive?' click':'')+(selected?' selected':'');e.textContent=c.joker?'★ JOKER':name(c);return e}
+let scoresExpanded=false;function render(){if(!game)return;$('allScoresBtn').textContent=scoresExpanded?'▴':'▾';$('allScoresBtn').setAttribute('aria-label',scoresExpanded?'Sluit alle scorelijsten':'Open alle scorelijsten');let p=current(),myTurn=game.turn===0,canDiscard=myTurn&&game.phase==='discard';$('scores').replaceChildren(...game.players.map((p,i)=>{let d=document.createElement('div');d.className='score'+(p.dead?' dead':'');let head=document.createElement('button');head.className='score-toggle';head.innerHTML=`<span>${p.name}${game.turn===i&&game.phase!=='roundover'?' •':' '}</span><strong>${p.score}</strong><small>${scoresExpanded?'▴':'▾'}</small>`;head.onclick=()=>{scoresExpanded=!scoresExpanded;render()};d.append(head);if(scoresExpanded){let list=document.createElement('div');list.className='score-history';let total=0;p.history.forEach(h=>{total=h.after;let row=document.createElement('div');row.className='score-line';row.innerHTML=`<span>${h.round}. ${h.won?'😊':h.delta>=0?'+'+h.delta:h.delta}</span><span>${h.won&&h.delta===0?'😊 · ':''}${h.after}</span>`;list.append(row)});if(!p.history.length){list.textContent='Nog geen rondes gespeeld'}d.append(list)}return d}));renderRoundResults();$('status').textContent=game.phase==='roundover'?'Ronde afgelopen':myTurn?(game.phase==='discard'?'Jij bent aan zet: leg kaarten af of roep Trostomaat.':game.phase==='draw'?'Kies een stapel om één kaart te pakken.':'Kaart gepakt. Je kunt nu eventueel direct teruggooien.'):`${p.name} is aan zet…`;$('actionBanner').textContent=game.phase==='roundover'?'🏁 Ronde afgelopen':myTurn?(game.phase==='discard'?'Jouw beurt · leg af of roep Trostomaat':game.phase==='draw'?'Tik op een stapel om een kaart te pakken':game.returnCard!==null?'Gelijke kaart! Tik op teruggooien (2 seconden)':'Kaart ontvangen · volgende speler automatisch'):`${p.name} speelt…`;$('hint').textContent=myTurn?'Handwaarde: '+sum(game.players[0].hand)+' punten. Trostomaat mag bij 5 of minder.':'Wacht tot de computer klaar is.';$('bots').replaceChildren(...game.players.slice(1).map(x=>{let d=document.createElement('div');d.className='opponent'+(x.dead?' dead':'')+(current()===x?' active':'');let label=document.createElement('div');label.className='opponent-name';label.textContent=x.name+' · '+x.score+' pt';d.append(label);let cards=document.createElement('div');cards.className='opponent-cards';for(const card of x.hand){let c=game.phase==='roundover'?cardHTML(card):document.createElement('div');if(game.phase!=='roundover')c.className='card back tiny';else c.classList.add('tiny','revealed');cards.append(c)}d.append(cards);return d}));$('lastPlay').replaceChildren(...(game.lastPlay||[]).map(c=>{let e=cardHTML(c);e.classList.add('tiny');return e}));$('deckCount').textContent='('+game.deck.length+')';let top=game.discards.at(-1);$('discard').replaceChildren();$('discard').className='card'+(top?.joker?' joker':top&&['♥','♦'].includes(top.suit)?' red':'');$('discard').textContent=top?name(top):'—';if(game.phase==='draw'&&game.pickableId!==null){let eligible=game.discards.find(c=>c.id===game.pickableId);if(eligible){$('discard').textContent=name(eligible);$('discard').title='Pak de bovenste kaart van de vorige beurt';}}$('hand').replaceChildren(...game.players[0].hand.slice().sort((a,b)=>point(a)-point(b)||((a.suit||'').localeCompare(b.suit||''))).map(c=>{let el=cardHTML(c,canDiscard,game.selected.includes(c.id));el.dataset.cardId=c.id;if(c.id===game.newCardId)el.classList.add('new-card');if(canDiscard)el.onclick=()=>{game.selected=game.selected.includes(c.id)?game.selected.filter(x=>x!==c.id):[...game.selected,c.id];$('warning').textContent='';render()};return el}));$('discardBtn').disabled=!canDiscard||!selected().length;$('callBtn').disabled=!canDiscard||sum(game.players[0].hand)>5;$('returnBtn').classList.toggle('hidden',!(myTurn&&game.phase==='afterdraw'&&game.returnCard!==null));$('draw').classList.toggle('available',myTurn&&game.phase==='draw');$('discard').classList.toggle('available',myTurn&&game.phase==='draw'&&game.discards.some(c=>c.id===game.pickableId));$('log').replaceChildren(...game.logs.map(x=>{let d=document.createElement('div');d.textContent=x;return d}));}
+$('allScoresBtn').onclick=()=>{scoresExpanded=!scoresExpanded;render()};$('menuBtn').onclick=()=>{$('menuModal').classList.remove('hidden')};$('closeMenu').onclick=()=>{$('menuModal').classList.add('hidden')};$('rulesBtn').onclick=()=>{$('rules').classList.toggle('hidden')};$('newGame').onclick=()=>{if(confirm('Een nieuw spel beginnen?')){$('menuModal').classList.add('hidden');scoresExpanded=false;newGame()}};$('discardBtn').onclick=humanDiscard;$('draw').onclick=()=>humanDraw('closed');$('discard').onclick=()=>humanDraw('open');$('returnBtn').onclick=returnCard;$('callBtn').onclick=callTrostomaten;$('modalBtn').onclick=afterRound;newGame();
+</script></body></html>
